@@ -1,0 +1,42 @@
+.editorRoot {
+	border: solid black 1px;
+	width: 960px;
+	min-height: 200px;
+	white-space: pre-wrap;
+}
+
+input.offscreen {
+	position: absolute;
+	left: -100%;
+	top: -100%;
+}
+
+math {
+	border: dotted red 1px;
+	min-width: 5px;
+	white-space: normal;
+}
+
+span.editClassedH1 {
+	display: block;
+	font-size: 26pt;
+	font-weight: bold;
+}
+
+span.editClassedH1 {
+	display: block;
+	font-size: 26pt;
+	font-weight: bold;
+}
+
+/**
+ * Cursors
+ */
+.editText > span.cursor {
+	border-right: solid 2px black;
+	border-bottom: dotted 2px green;
+}
+
+.editMath > span.cursor {
+	border: dotted 2px green;
+}
