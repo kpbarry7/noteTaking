@@ -3,7 +3,7 @@ LOREM = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum gra
 function Input(target) {
 	this.active = false;
 	this.target = target;
-	
+
 	this.cursor = $('<span class="cursor">');
 };
 
@@ -11,7 +11,7 @@ Input.prototype.getpending = function() {}
 Input.prototype.setpending = function() {}
 
 Input.prototype.activate = function() {
-	
+
 }
 
 Input.prototype.deactivate = function() {
@@ -41,7 +41,7 @@ Input.prototype.sendinput = function() {
 
 function KeyboardInput(target) {
 	Input.call(this, target);
-	
+
 	this.tmp = $('<input class="offscreen" type="text">');
 	this.tmp
 		.blur(this.deactivate.bind(this))
@@ -65,9 +65,9 @@ KeyboardInput.prototype.activate = function() {
 	if (this.active)
 		return;
 	this.active = true;
-	
+
 	this.tmp.focus();
-	Input.prototype.activate.call(this);	
+	Input.prototype.activate.call(this);
 }
 
 KeyboardInput.prototype.deactivate = function() {
@@ -127,9 +127,9 @@ KeyboardInput.prototype.dokeypress = function(e) {
 
 function HandwritingInput(target) {
 	Input.call(this, target);
-	
+
 	this.active = false;
-	
+
 	this.simulatedInput = ["<h1>NoteTorious</h1>", "<b>NoteTorious</b>", "recognizes", "whatever", "you", "write!", "</br></br><u>Examples:</u></br>", "Math~", "y", "=", "x<sup>2</sup>", "+", "2x", "+", "4", "</br>", "Chemistry~", "C<sub>6</sub>", "H<sub>12</sub>", "O<sub>6</sub>", "</br>", "Links~", '<a href="#">email@address.com</a>', '<a href="#">notetorio.us</a>', "<br><i>And</i>", "<i>more~</i></br>"];
 	this.simulatedInput.push.apply(this.simulatedInput, LOREM.split(' '));
 };
@@ -139,7 +139,7 @@ HandwritingInput.prototype.activate = function() {
 	if (this.active)
 		return
 	this.active = true;
-	
+
 	this.pad = $('<canvas width="600" height="400" class="penInput" tabindex="0">');
 	this.pad
 		.on('touchstart', this.startline.bind(this))
@@ -152,24 +152,24 @@ HandwritingInput.prototype.activate = function() {
 		.blur(this.deactivate.bind(this))
 		.appendTo(document.body)
 		.focus();
-		
+
 	this.scale = {
 		x: this.pad[0].width / this.pad.width(),
 		y: this.pad[0].height / this.pad.height()
 	}
-		
+
 	this.ctx = this.pad[0].getContext("2d");
 	this.clearCanvas();
-		
-	Input.prototype.activate.call(this);	
+
+	Input.prototype.activate.call(this);
 }
 
 HandwritingInput.prototype.deactivate = function() {
 	this.pad.remove();
 	this.pad = this.ctx = undefined;
-	
+
 	this.active = false;
-		
+
 	Input.prototype.deactivate.call(this);
 }
 
@@ -189,7 +189,7 @@ HandwritingInput.prototype.getPosition = function(t) {
 		// This is a touch event
 		//TODO Support multitouch
 		t = t.originalEvent.touches[0]
-	
+
 	//document.write("x:"+(t.pageX - offset.left) * this.scale.x)
 	return {
 		x: (t.pageX - offset.left) * this.scale.x,
@@ -199,28 +199,28 @@ HandwritingInput.prototype.getPosition = function(t) {
 
 HandwritingInput.prototype.clearCanvas = function() {
 	this.ctx.clearRect(0, 0, this.pad[0].width, this.pad[0].height);
-	
+
 	this.ctx.beginPath();
 	this.ctx.moveTo(0, 325);
 	this.ctx.lineTo(600, 325);
-	
+
 	this.ctx.moveTo(0, 75);
 	this.ctx.lineTo(600, 75);
 	this.ctx.stroke();
-	
+
 	this.ctx.beginPath();
 	this.ctx.setLineDash([5]);
-	
+
 	this.ctx.moveTo(0, 200);
 	this.ctx.lineTo(600, 200);
-	
+
 	this.ctx.stroke();
 	this.ctx.setLineDash([]);
 }
 
 HandwritingInput.prototype.startline = function(e) {
 	e.preventDefault();
-	
+
 	window.clearTimeout(this.wordTimer);
 	this.strokes = this.strokes || []
 	this.curStroke = this.curStroke || [this.getPosition(e)];
@@ -228,14 +228,14 @@ HandwritingInput.prototype.startline = function(e) {
 
 HandwritingInput.prototype.continueline = function(e) {
 	e.preventDefault();
-	
+
 	if (!this.curStroke)
 		return;
-	
+
 	var newPos = this.getPosition(e);
 	var lastPos = this.curStroke[this.curStroke.length-1];
 	this.curStroke.push(newPos);
-	
+
 	this.ctx.beginPath();
 	this.ctx.moveTo(lastPos.x, lastPos.y);
 	this.ctx.lineTo(newPos.x, newPos.y);
@@ -244,10 +244,13 @@ HandwritingInput.prototype.continueline = function(e) {
 
 HandwritingInput.prototype.finishline = function(e) {
 	e.preventDefault();
-	
+
+	if (!this.curStroke)
+		return;
+
 	this.strokes.push(this.curStroke);
 	delete this.curStroke;
-	
+
 	this.wordTimer = window.setTimeout(this.finishword.bind(this), 500);
 }
 
