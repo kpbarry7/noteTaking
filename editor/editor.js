@@ -6,9 +6,8 @@ function Editor(parent, el) {
 	this.el = $(el);
 
 	this.parent = parent;
-	this.defaultCommand = this.defaultCommand.bind(this);
 	this.active = false;
-	pending = "";
+	this.input = new KeyboardInput(this);
 
 	this.commands = {};
 
@@ -17,105 +16,41 @@ function Editor(parent, el) {
 
 // Install listeners and elements for a focused editor
 Editor.prototype.activate = function() {
-	if (this.active)
-		return;
-	this.active = true;
-
-	var cursor = $('<span class="cursor">');
-	cursor
-		.appendTo(this.el);
-
-	var doinput = function(e) {
-		var pending = tmp.val();
-		switch (e.which) {
-			case 118: // v
-				if (e.ctrlKey)
-					pending = '';
-					window.setTimeout(function() {
-						this.sendpaste(tmp.val());
-						tmp.val('');
-					}.bind(this), 0);
-				break;
-			case 32: // Sp.
-				if (this.sendinput(pending))
-					pending = '';
-					window.setTimeout(function() {
-						tmp.val('');
-					}, 0);
-				break;
-			case 8: // Bksp
-				//FIXME: buggy.
-				if (pending) {
-					tmp.val(pending = pending.slice(0,-1));
-				} else {
-					this.el.text(this.el.text().slice(0,-1))
-					cursor.appendTo(this.el);
-				}
-				break;
-			case 0:
-				break;
-			default:
-				pending += String.fromCharCode(e.which);
-		}
-
-		if (pending &&
-			this.resolveCommand(pending) &&
-			this.sendinput(pending)) {
-			tmp.val(pending = '');
-		}
-
-		cursor.text(pending);
-	}.bind(this);
-
-	var dokey = function(e) {
-		var pending = tmp.val();
-		switch (e.which) {
-			case 9: // Tab
-			case 13: // Return
-				e.preventDefault();
-			case 39: // Right
-				pending !== '' && this.sendinput(pending);
-				tmp.val('');
-				this.parent && this.parent.activate();
-				break;
-		}
-	}.bind(this);
-
-	this.deactivate = function() {
-		tmp.remove();
-		cursor.remove();
-		this.active = false;
-	}.bind(this);
-
-	var tmp = $('<input class="offscreen" type="text">');
-	tmp
-		.blur(this.deactivate)
-		.keydown(dokey)
-		.keypress(doinput)
-		.appendTo(document.body)
-		.focus();
-
-	this.insert = function(content) {
-		return cursor.before(content);
-	}
+	this.input.getcursor().appendTo(this.el);
+	this.input.activate();
 }
 
-// Check if this editor or it's parents have a handler
-// for the command
+Editor.prototype.deactivate = function() {
+}
+
+Editor.prototype.navigate = function(direction) {
+	if (direction = 1) {
+		this.parent && this.parent.activate();
+	} //TODO: Implement other directions
+}
+
 Editor.prototype.resolveCommand = function(cmd) {
 	if (this.commands[cmd])
 		return this.commands[cmd].bind(this);
-	else if (this.parent)
-		return this.parent.resolveCommand(cmd);
+	//else if (this.parent)
+	//	return this.parent.resolveCommand(cmd);
 	else return undefined;
 }
 
-Editor.prototype.sendinput = function(value) {
-	return (this.resolveCommand(value) || this.defaultCommand)(value);
+Editor.prototype.insert = function(value) {
+	console.log("ns", value)
+	//FIXME: Probably buggy
+	this.el.append(value);
+	this.input.getcursor().appendTo(this.el);
 }
 
-// Handle input that doesn't match the pattern for any command
-Editor.prototype.defaultCommand = function(input) {
+Editor.prototype.sendcommand = function(value) {
+	var cmd = this.resolveCommand(value);
+	console.log("cmd", value, cmd);
+	return cmd ? cmd(value) : false;
+}
+
+Editor.prototype.sendinput = function(input) {
 	this.insert(input + ' ');
 	return true;
 }
@@ -123,6 +58,19 @@ Editor.prototype.defaultCommand = function(input) {
 // Transforms complex pastes (ex. Image URI)
 Editor.prototype.sendpaste = function(input) {
 	this.insert(input);
+}
+
+Editor.prototype.dobackspace = function() {
+	//FIXME: Buggy also.
+	var cur = this.input.getcursor();
+	cur.remove();
+	var content = this.el.html();
+	if (content[content.length-1] == '>')
+		//TODO: Enter sections rather than deleting them whole
+		this.el.children(":last-child").remove();
+	else
+		this.el.html(this.el.html().slice(0,-1));
+	cur.appendTo(this.el);
 }
 
 Editor.prototype.childFactory = function(newType, args) {
@@ -158,10 +106,11 @@ MathEditor = function(parent, el, className) {
 	this.commands['\\sqrt'] = this.childFactory(MathEditor, ["msqrt"]);
 	this.commands['x^2'] = function() {return this.insert(SAMP_EXP)};
 	this.commands['x_2'] = function() {return this.insert(SAMP_SUB)};
+	this.commands['\\int'] = function() {return this.insert("<mo>∫</mo>")};
 }
 MathEditor.prototype = Object.create(ElementEditor.prototype);
 
-MathEditor.prototype.defaultCommand = function(input) {
+MathEditor.prototype.sendinput = function(input) {
 	if (input.match(/-?[0-9]+(.[0-9]+)?(e[0-9]+)?/)) {
 		this.insert($('<mn>').text(input));
 	} else if (input.match(/[\+\-\/\\\*]/)) {
@@ -178,6 +127,8 @@ TextEditor = function(parent, el, className) {
 	ElementEditor.call(this, parent, el, className);
 
 	this.commands['\\eq'] = this.childFactory(MathEditor, ["math"]);
+	this.commands['^'] = this.childFactory(TextEditor, ['sup']);
+	this.commands['_'] = this.childFactory(TextEditor, ['sub']);
 	this.commands['\\1'] = this.childFactory(TextEditor, ['h1']);
 	this.commands['\\2'] = this.childFactory(TextEditor, ['h2']);
 	this.commands['\\3'] = this.childFactory(TextEditor, ['h3']);
