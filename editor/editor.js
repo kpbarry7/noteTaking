@@ -7,7 +7,7 @@ function Editor(parent, el) {
 
 	this.parent = parent;
 	this.active = false;
-	this.input = new KeyboardInput(this);
+	this.input = new (window.inputMethod || KeyboardInput)(this);
 
 	this.commands = {};
 
@@ -21,6 +21,7 @@ Editor.prototype.activate = function() {
 }
 
 Editor.prototype.deactivate = function() {
+	this.input.getcursor().remove();
 }
 
 Editor.prototype.navigate = function(direction) {
@@ -38,7 +39,6 @@ Editor.prototype.resolveCommand = function(cmd) {
 }
 
 Editor.prototype.insert = function(value) {
-	console.log("ns", value)
 	//FIXME: Probably buggy
 	this.el.append(value);
 	this.input.getcursor().appendTo(this.el);
@@ -104,9 +104,9 @@ MathEditor = function(parent, el, className) {
 	ElementEditor.call(this, parent, el || "math", className || "editMath");
 
 	this.commands['\\sqrt'] = this.childFactory(MathEditor, ["msqrt"]);
-	this.commands['x^2'] = function() {return this.insert(SAMP_EXP)};
-	this.commands['x_2'] = function() {return this.insert(SAMP_SUB)};
-	this.commands['\\int'] = function() {return this.insert("<mo>∫</mo>")};
+	this.commands['x^2'] = function() {this.insert(SAMP_EXP); return true;};
+	this.commands['x_2'] = function() {this.insert(SAMP_SUB); return true;};
+	this.commands['\\int'] = function() {this.insert("<mo>∫</mo>"); return true;};
 }
 MathEditor.prototype = Object.create(ElementEditor.prototype);
 
@@ -137,10 +137,3 @@ TextEditor = function(parent, el, className) {
 	this.commands['\\u'] = this.childFactory(TextEditor, ['u']);
 }
 TextEditor.prototype = Object.create(ElementEditor.prototype);
-
-
-$(function(){
-	var el = $('#editorRoot').first();
-	var editor = new TextEditor(undefined, el);
-	console.log("Created editor:", el, editor);
-});

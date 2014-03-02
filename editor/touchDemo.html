@@ -6,7 +6,7 @@
 	<script src="editor.js"></script>
 	<script src="input.js"></script>
 	<script>
-		window.inputMethod = KeyboardInput;
+		window.inputMethod = HandwritingInput;
 		$(function(){
 			var el = $('#editorRoot').first();
 			var editor = new TextEditor(undefined, el);
@@ -16,8 +16,7 @@
 	<link rel="stylesheet" type="text/css" href="editor.css" />
 </head>
 <body>
-	<h1>Editor Demo</h1>
-	Test page for debugging editor code
+	<h4>Touch Demo</h4>
 	<div class="editorRoot" id="editorRoot"></div>
 </body>
 </html>
