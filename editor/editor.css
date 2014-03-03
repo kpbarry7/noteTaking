@@ -68,14 +68,17 @@ input.offscreen {
 	background-color: #FFFFAA;
 }
 
-@media (min-width: 600px) {
+@media (min-width: 1081px) {
 	.editorRoot {
 		margin: 12px 24px;
 		box-shadow: 0 0 20px black;
 	}
 
 	.penInput {
-
+		left: 50%;
+		right: auto;
+		width: 80%;
+		margin-left: -40%;
 	}
 }
 
