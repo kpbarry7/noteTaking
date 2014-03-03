@@ -57,21 +57,25 @@ input.offscreen {
 .editorRoot {
 	/*border: solid black 1px;*/
 	position: absolute;
-	top: 70px;
+	top: 58px;
 	left: 0;
 	right: 0;
-	margin: 8px;
+	margin: 0px;
 	min-height: 200px;
+	padding: 24px 12px;
 	font-family: 'Delius', cursive;
 	font-size: 14pt;
+	background-color: #FFFFAA;
 }
 
 @media (min-width: 600px) {
 	.editorRoot {
 		margin: 12px 24px;
-		padding: 24px 12px;
 		box-shadow: 0 0 20px black;
-		background-color: #FFFFAA;
+	}
+
+	.penInput {
+
 	}
 }
 
