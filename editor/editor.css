@@ -77,8 +77,8 @@ input.offscreen {
 	.penInput {
 		left: 50%;
 		right: auto;
-		width: 80%;
-		margin-left: -40%;
+		width: 600px;
+		margin-left: -300px;
 	}
 }
 
