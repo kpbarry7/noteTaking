@@ -51,7 +51,7 @@ Editor.prototype.sendcommand = function(value) {
 }
 
 Editor.prototype.sendinput = function(input) {
-	this.insert(input + ' ');
+	this.insert(input + '&nbsp;');
 	return true;
 }
 
@@ -68,8 +68,10 @@ Editor.prototype.dobackspace = function() {
 	if (content[content.length-1] == '>')
 		//TODO: Enter sections rather than deleting them whole
 		this.el.children(":last-child").remove();
+	else if (content.match(/&[a-z]+;\s*$/))
+		this.el.html(content.replace(/&[a-z]+;$/, ''));
 	else
-		this.el.html(this.el.html().slice(0,-1));
+		this.el.html(content.slice(0,-1));
 	cur.appendTo(this.el);
 }
 
