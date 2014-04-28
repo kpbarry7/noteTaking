@@ -34,7 +34,7 @@ function textSearch() {
 				.replace(/[,.\/\\\[\]\(\)"']/, '')
 
 			for (i in query) {
-				if (!text.contains(query[i])) {
+				if (text.indexOf(query[i]) == -1) {
 					el.hide();
 					return;
 				}

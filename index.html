@@ -9,8 +9,20 @@
         <link href="assets/css/bootstrap.css" rel="stylesheet">
         <style type="text/css">
             body {
-            padding-top: 60px;
-            padding-bottom: 40px;
+                padding-top: 60px;
+                padding-bottom: 40px;
+            }
+
+            #content {
+                margin: 0;
+                padding: 10px;
+                width: 100%;
+                top: 0px;
+                bottom: 0;
+            }
+
+            #content > h2 {
+                margin-top: 0;
             }
 
             .columns > * {
@@ -18,8 +30,23 @@
             	vertical-align: top;
             }
 
+            #video_panel {
+                position: absolute;
+                left: 16px;
+                right: 40%;
+            }
+
             #transcription_panel {
-            	width: 480px;
+            	position: absolute;
+                top: 112px;
+                left: 656px;
+                right: 0px;
+                bottom: 0px;
+                overflow-y: scroll;
+                background: #DDDDDD;
+                margin: 0 8px;
+                padding: 8px;
+                border: inset 2px;
             }
         </style>
         <link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
@@ -46,14 +73,23 @@
             <!-- /.container -->
         </div>
         <!-- /.navbar -->
-        <div class="container">
+        <div class="container" id="content">
+            <h2>PHYS 7890 - For the love of physics</h2>
             <div class="columns">
-                <iframe id="video_frame" name="video_frame" width="640" height="480" src="https://www.youtube.com/v/PmJV8CHIqFc" type="text/html"></iframe>
+                <div id="video_panel">
+                    <iframe id="video_frame" name="video_frame" width="640" height="480" src="https://www.youtube.com/v/SRh75B5iotI" type="text/html"></iframe>
+                </div>
                 <div id="transcription_panel">
-                	<input id="search_field" placeholder="Search transcript..." />
+                	<input id="search_field" placeholder="Search transcript..." size="50" />
                 	<a href="#"><div type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></div></a>
 	                <ul id="transcription">
 	                    <script type="text/javascript">
+function convertTimestamp(time) {
+    time = time.replace('s', '').split('m')
+    min = time.length == 2 ? Number(time[0]) : 0
+    return Number(time[time.length-1]) + min * 60
+}
+
 function formatTimestamp(time) {
 	var d = new Date(0);
 	d.setUTCSeconds(time);
@@ -62,15 +98,102 @@ function formatTimestamp(time) {
 }
 
 var data = [
-	[0, "Transcription... Transcription... Transcription... Transcription... Transcription... Transcription... Transcription... Transcription... Transcription... Transcription... Transcription... Transcription... Transcription... Transcription... Transcription... Transcription... Transcription... Transcription... Transcription... Transcription... Transcription... Transcription... Transcription... Transcription... Transcription... Transcription... "],
-	[29, "Transcription..."],
-	[66, "Transcription..."],
-	[103, "Transcription..."],
+    ['00s', 'Take your seats'],
+    ['03s', 'Take your seats, please'],
+    ['12s', 'My lecture will be about 40 minutes'],
+    ['14s', 'And after that, I will give anyone the opportunity to ask'],
+    ['18s', 'me questions for about 15 or 20 minutes'],
+    ['21s', 'So the whole thing will be one hour'],
+    ['23s', 'And it is after that hour that we will do book signing'],
+    ['26s', 'You can buy the books there if you want to and'],
+    ['29s', 'I\'ll sign them here'],
+    ['31s', 'We\'ll get back to that later'],
+    ['35s', 'If you have a pendulum--'],
+    ['41s', 'this is a pendulum, mass m, length l'],
+    ['47s', 'that you can derive, which I do in class, but I won\'t bore'],
+    ['51s', 'you with that'],
+    ['53s', 'You can derive how long it takes for the pendulum to make'],
+    ['56s', 'one complete oscillation'],
+    ['59s', 'And we call that the period of the pendulum'],
+    ['1m02s', 'And I\'d arrive in class that that period equals 2 pi times'],
+    ['1m09s', 'the square root of L over g'],
+    ['1m13s', 'You already know what L is'],
+    ['1m15s', 'If you don\'t know what pi is, you might as'],
+    ['1m17s', 'well leave right now'],
+    ['1m20s', 'And g is what we call the gravitational acceleration,'],
+    ['1m26s', 'which is approximately the same everywhere on Earth'],
+    ['1m30s', 'But it is very close in Boston to 9.80 meters'],
+    ['1m36s', 'per second per second'],
+    ['1m38s', 'And you will say, well, that\'s meters per second per second'],
+    ['1m42s', 'What that means is that if you have an object and you drop it'],
+    ['1m45s', 'from a very large altitude, very high'],
+    ['1m48s', 'a few hundred meters high'],
+    ['1m50s', 'and I dropped it 0 speed'],
+    ['1m52s', 'After one second, it will have a speed of'],
+    ['1m55s', '9.8 meters per second'],
+    ['1m57s', 'But after another second, it will add to that 9.8 meters'],
+    ['2m01s', 'per second'],
+    ['2m02s', 'So it\'s twice that. And after three seconds, it\'s 3 seconds'],
+    ['2m06s', 'So now you understand why it is meters'],
+    ['2m08s', 'per second per second'],
+    ['2m11s', 'And so that\'s the meaning of g'],
+    ['2m17s', 'There is something weird about this equation, something that'],
+    ['2m21s', 'must go against your intuition'],
+    ['2m23s', 'And you shouldn\'t feel bad because it also goes against'],
+    ['2m26s', 'my intuition'],
+    ['2m28s', 'So we have the pendulum, and suppose I bring the pendulum'],
+    ['2m32s', 'all the way out here'],
+    ['2m34s', 'We call that the amplitude of the pendulum'],
+    ['2m36s', 'And we let is swing back and forth'],
+    ['2m39s', 'There\'s a certain period'],
+    ['2m41s', 'But now, we bring it out only this far'],
+    ['2m45s', 'It doesn\'t have to travel very much at all'],
+    ['2m48s', 'Doesn\'t that make a difference in the periods?'],
+    ['2m51s', 'The equation says no, it doesn\'t'],
+    ['2m54s', 'Because if it did make a difference, there would be in'],
+    ['2m57s', 'that equation the amplitude, which is not'],
+    ['3m00s', 'And I\'m going to demonstrate that to you, that it is quite'],
+    ['3m03s', 'remarkable that indeed that period is independent of'],
+    ['3m07s', 'amplitude if you don\'t go to extreme'],
+    ['3m10s', 'values of the amplitude'],
+    ['3m13s', 'There is something else in here, which is even more'],
+    ['3m16s', 'non-intuitive'],
+    ['3m18s', 'And that is doesn\'t it matter whether the bob--'],
+    ['3m24s', 'we call this the bob--'],
+    ['3m26s', 'whether it is 1 kilogram or 500 kilograms?'],
+    ['3m30s', 'You would think, well, that must make a'],
+    ['3m32s', 'difference in the period'],
+    ['3m34s', 'But the equation says sorry, it doesn\'t'],
+    ['3m38s', 'And I\'m going to demonstrate that to you, too'],
+    ['3m42s', 'We have here--'],
+    ['3m44s', 'by the way, if you ever want to test this pendulum, this'],
+    ['3m47s', 'equation for yourself, put in L equals 1 meter'],
+    ['3m51s', 'and use this number'],
+    ['3m53s', 'You will get a period of 2.0 seconds'],
+    ['3m55s', 'It\'s very easy to do at home'],
+    ['3m57s', 'You make one meter'],
+    ['3m58s', 'You put an apple at the bottom and you swing it'],
+    ['4m01s', 'The one meter has to be accurate'],
+    ['4m03s', 'You see that it\'s going to be 2.0 seconds'],
+    ['4m07s', 'Our pendulum that we have here is really the'],
+    ['4m13s', 'mother of all pendulums'],
+    ['4m16s', 'Look at it'],
+    ['4m19s', '15 and 1/2 kilograms and the length of this pendulum is'],
+    ['4m25s', '5.21 meters'],
+    ['4m29s', 'However, you must understand that it is very difficult to'],
+    ['4m36s', 'measure that to very high accuracy'],
+    ['4m39s', 'And so there is an uncertainty in the measurement of the'],
+    ['4m42s', 'lengths that we have to be honest about because we are'],
+    ['4m46s', 'physicists, after all'],
+    ['4m48s', 'And the uncertainty we estimate is about'],
+    ['4m50s', 'centimeters'],
+    ['4m52s', 'So we could be off by 5 centimeters.']
 ];
-
 data.forEach(function(d){
+    d[0] = convertTimestamp(d[0]);
+
 	document.write(
-			'<li><a target="video_frame" href="https://www.youtube.com/v/PmJV8CHIqFc?autoplay=1&amp;start='
+			'<li><a target="video_frame" href="https://www.youtube.com/v/SRh75B5iotI?autoplay=1&amp;start='
 			+ d[0] + '">' + formatTimestamp(d[0]) + '</a> ' + d[1] + '</li>'
 		);
 });
@@ -78,9 +201,6 @@ data.forEach(function(d){
 	                </ul>
 	            </div>
             </div>
-            <footer>
-                <p>&copy; Recordious 2014</p>
-            </footer>
         </div>
     </body>
 </html>
